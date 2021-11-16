@@ -2,8 +2,19 @@ import Head from "next/head";
 import Header from "@components/Header";
 import Footer from "@components/Footer";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 
 function Page({ stars }) {
+  const [clientStars, setClientStars] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/stars")
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => setClientStars(json.stargazers_count));
+  }, []);
+
   const router = useRouter();
   const locale = router.locale;
   return (
@@ -16,7 +27,8 @@ function Page({ stars }) {
       <main>
         <Header title="Welcome to my app!" />
         <p className="description">
-          Locale is {locale}. Number of stars: {stars}
+          Locale is {locale}. Number of stars: {stars}. Client stars:{" "}
+          {clientStars}
         </p>
       </main>
 
