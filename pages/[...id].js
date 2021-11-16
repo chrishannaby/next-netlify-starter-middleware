@@ -3,7 +3,7 @@ import Header from "@components/Header";
 import Footer from "@components/Footer";
 import { useRouter } from "next/router";
 
-export default function Home() {
+function Page({ stars }) {
   const router = useRouter();
   const locale = router.locale;
   return (
@@ -15,10 +15,20 @@ export default function Home() {
 
       <main>
         <Header title="Welcome to my app!" />
-        <p className="description">Locale is {locale}</p>
+        <p className="description">
+          Locale is {locale}. Number of stars: {stars}
+        </p>
       </main>
 
       <Footer />
     </div>
   );
 }
+
+Page.getInitialProps = async (ctx) => {
+  const res = await fetch("https://api.github.com/repos/vercel/next.js");
+  const json = await res.json();
+  return { stars: json.stargazers_count };
+};
+
+export default Page;
